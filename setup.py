@@ -10,7 +10,7 @@ import differentiable_randaugment as dra  # noqa isort:skip
 
 
 setup(
-    name="langumo",
+    name="differentiable_randaugment",
     version=dra.__version__,
     author=dra.__author__,
     author_email=dra.__author_email__,
