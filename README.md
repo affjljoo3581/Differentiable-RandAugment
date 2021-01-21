@@ -1,4 +1,13 @@
 # Differentiable RandAugment
+**Optimize RandAugment with differentiable operations**
+
+![build](https://github.com/affjljoo3581/Differentiable-RandAugment/workflows/build/badge.svg)
+![PyPI](https://img.shields.io/pypi/v/differentiable_randaugment)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/differentiable_randaugment)
+![PyPI - Format](https://img.shields.io/pypi/format/differentiable_randaugment)
+![PyPI - License](https://img.shields.io/pypi/l/differentiable_randaugment?color=blue)
+[![codecov](https://codecov.io/gh/affjljoo3581/Differentiable-RandAugment/branch/master/graph/badge.svg?token=3VSK8ZF367)](https://codecov.io/gh/affjljoo3581/Differentiable-RandAugment)
+[![CodeFactor](https://www.codefactor.io/repository/github/affjljoo3581/differentiable-randaugment/badge)](https://www.codefactor.io/repository/github/affjljoo3581/differentiable-randaugment)
 
 ## Table of Contents
   - [Introduction](#introduction)
