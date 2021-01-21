@@ -25,7 +25,7 @@ Or you can install from source by cloning the repository and running:
 
 ## Dependencies
 - opencv_python
-- torch>=1.7.1
+- torch>=1.7
 - albumentations
 - numpy
 
