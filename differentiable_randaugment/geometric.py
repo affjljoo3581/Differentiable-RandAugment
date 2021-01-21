@@ -62,7 +62,7 @@ class GeometricOperation(BaseOperation, metaclass=ABCMeta):
         )
 
     def apply_tensor(self, x: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
-        matrix = torch.zeros((2, 3), dtype=x.dtype, device=x.device)
+        matrix = torch.zeros((2, 3), dtype=torch.float32, device=x.device)
 
         # To make the matrix differentiable, we copy all values to the empty matrix
         # tensor directly.
@@ -71,7 +71,7 @@ class GeometricOperation(BaseOperation, metaclass=ABCMeta):
             matrix[i, j] = transform[i][j]
 
         matrix = matrix.expand(x.size(0), -1, -1)
-        grid = F.affine_grid(matrix, x.shape, align_corners=True)
+        grid = F.affine_grid(matrix, x.shape, align_corners=True).float()
 
         # Unfortunately, torch does not support background color in affine
         # transformation. Instead, it fills the background with zero. So we will
