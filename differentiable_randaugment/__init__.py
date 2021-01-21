@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "affjljoo3581"
 __author_email__ = "affjljoo3581@gmail.com"
 __doc__ = "The unified corpus building environment for Language Models."
