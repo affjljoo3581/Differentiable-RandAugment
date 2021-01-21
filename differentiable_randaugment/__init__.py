@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "affjljoo3581"
 __author_email__ = "affjljoo3581@gmail.com"
-__doc__ = "The unified corpus building environment for Language Models."
-__homepage__ = "https://github.com/affjljoo3581/langumo"
+__doc__ = "Optimize RandAugment with differentiable operations"
+__homepage__ = "https://github.com/affjljoo3581/Differentiable-RandAugment"
 __license__ = "Apache-2.0"
 
 
