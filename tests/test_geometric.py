@@ -45,4 +45,4 @@ def test_TranslateY_consistency():
 
 
 def test_Cutout_consistency():
-    assert_geometric_op(Cutout(0, 0.2))
+    assert_geometric_op(Cutout(0, 0.2), image_size=(256, 256))

@@ -222,7 +222,7 @@ class Cutout(GeometricOperation):
         starty = int(random.random() * (height - size))
 
         return cv2.rectangle(
-            x,
+            np.copy(x),
             (startx, starty),
             (startx + size, starty + size),
             color=(0x80, 0x80, 0x80),
