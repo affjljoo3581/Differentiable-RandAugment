@@ -140,7 +140,7 @@ class Solarize(BaseOperation):
 
 
 class SolarizeAdd(BaseOperation):
-    """Invert all shifted pixels above the threshold.
+    """Apply brightness to the pixels above the threshold.
 
     +---------------+-------------+-----------+
     |               | Input Image | Magnitude |
@@ -148,18 +148,19 @@ class SolarizeAdd(BaseOperation):
     | SolarizeAdd   | ✔           | ✔         |
     +---------------+-------------+-----------+
 
-    This class applies brightness to the image and inverts the applied image pixels
-    which are greater than the half of the color range (i.e. `0x80` for `byte`s and
-    `0.5` for `float`s). The range of magnitude value is `[0, 0xFF]`.
+    This class is a variation of `Solarize`. It solarizes the image by applying
+    brightness to the pixels above threshold, instead of inverting them. The threshold
+    is a half of the color range (i.e. `0x80` for `byte`s and `0.5` for `float`s). The
+    range of magnitude value is `[0, 0xFF]`.
     """
 
     def apply_numpy(self, x: np.ndarray, value: float) -> np.ndarray:
-        x = np.clip(x + value, 0, 0xFF).astype(np.uint8)
-        return np.where(x < 0x80, x, 0xFF - x)
+        solarized = np.clip(x + value, 0, 0xFF).astype(np.uint8)
+        return np.where(x < 0x80, x, solarized)
 
     def apply_tensor(self, x: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
-        x = torch.clamp(x + value / 0xFF, 0, 1)
-        return torch.where(x < 0.5, x, 1.0 - x)
+        solarized = torch.clamp(x + value / 0xFF, 0, 1)
+        return torch.where(x < 0.5, x, solarized)
 
 
 class Posterize(BaseOperation):
