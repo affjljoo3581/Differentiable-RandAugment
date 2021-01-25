@@ -44,7 +44,9 @@ class GeometricOperation(BaseOperation, metaclass=ABCMeta):
     def transform(self, value: Union[float, torch.Tensor]) -> TransformMatrix:
         ...
 
-    def apply_numpy(self, x: np.ndarray, value: float) -> np.ndarray:
+    def apply_numpy_affine(
+        self, x: np.ndarray, value: float, background: int = 0x80
+    ) -> np.ndarray:
         height, width = x.shape[:2]
 
         # Since `cv2` apply affine transformation by fixing center point to the left-top
@@ -58,10 +60,12 @@ class GeometricOperation(BaseOperation, metaclass=ABCMeta):
             matrix[:2, :],
             (width, height),
             flags=cv2.INTER_LINEAR,
-            borderValue=(0x80, 0x80, 0x80),
+            borderValue=(background, background, background),
         )
 
-    def apply_tensor(self, x: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
+    def apply_tensor_affine(
+        self, x: torch.Tensor, value: torch.Tensor, background: float = 0.5
+    ) -> torch.Tensor:
         matrix = torch.zeros((2, 3), dtype=torch.float32, device=x.device)
 
         # To make the matrix differentiable, we copy all values to the empty matrix
@@ -76,8 +80,14 @@ class GeometricOperation(BaseOperation, metaclass=ABCMeta):
         # Unfortunately, torch does not support background color in affine
         # transformation. Instead, it fills the background with zero. So we will
         # normalize the input tensor to make the background color be `0.5`.
-        x = F.grid_sample(2 * x - 1, grid, "bilinear", "zeros", align_corners=True)
-        return (x + 1) / 2
+        x = F.grid_sample(x - background, grid, "bilinear", "zeros", align_corners=True)
+        return x + background
+
+    def apply_numpy(self, x: np.ndarray, value: float) -> np.ndarray:
+        return self.apply_numpy_affine(x, value, background=0x80)
+
+    def apply_tensor(self, x: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
+        return self.apply_tensor_affine(x, value, background=0.5)
 
 
 class ShearX(GeometricOperation):
@@ -177,3 +187,48 @@ class Rotate(GeometricOperation):
         alpha, beta = torch.cos(rad), torch.sin(rad)
 
         return [[alpha, -beta, 0], [beta, alpha, 0]]
+
+
+class Cutout(GeometricOperation):
+    """Set a random square patch to gray.
+
+    +---------------+-------------+-----------+
+    |               | Input Image | Magnitude |
+    +===============+=============+===========+
+    | Cutout        | ✔           | ✔         |
+    +---------------+-------------+-----------+
+
+    A magnitude of this operation must be positive and relative. This class erase a
+    random square patch from the image and fill the region with gray color. The
+    magnitude decides the patch size. The patch position is randomly selected.
+    """
+
+    def transform(self, size: Union[float, torch.Tensor]) -> TransformMatrix:
+        if isinstance(size, float):
+            raise RuntimeError(
+                "this operation does not support affine transform for numpy array"
+            )
+
+        tx = (1 - 2 * random.random() * (1 - size.item())) / size - 1
+        ty = (1 - 2 * random.random() * (1 - size.item())) / size - 1
+
+        return [[1 / size, 0, tx], [0, 1 / size, ty]]
+
+    def apply_numpy(self, x: np.ndarray, value: float) -> np.ndarray:
+        height, width = x.shape[:2]
+
+        size = int(value * min(width, height))
+        startx = int(random.random() * (width - size))
+        starty = int(random.random() * (height - size))
+
+        return cv2.rectangle(
+            x,
+            (startx, starty),
+            (startx + size, starty + size),
+            color=(0x80, 0x80, 0x80),
+            thickness=-1,
+        )
+
+    def apply_tensor(self, x: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
+        ratio = self.apply_tensor_affine(torch.ones_like(x), value, background=0)
+        return ratio * 0.5 + (1 - ratio) * x

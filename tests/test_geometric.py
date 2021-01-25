@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from differentiable_randaugment.geometric import (
+    Cutout,
     Rotate,
     ShearX,
     ShearY,
@@ -41,3 +42,7 @@ def test_TranslateX_consistency():
 
 def test_TranslateY_consistency():
     assert_geometric_op(TranslateY(0, 0.5))
+
+
+def test_Cutout_consistency():
+    assert_geometric_op(Cutout(0, 0.2))

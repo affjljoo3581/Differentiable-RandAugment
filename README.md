@@ -107,9 +107,11 @@ While `RandAugment` is an extension of `albumentations`, you can combine other a
 | TranslateX    | ✔ | ✔ |
 | TranslateY    | ✔ | ✔ |
 | Rotate        | ✔ | ✔ |
+| Cutout        | ✔ | ✔ |
 | AutoContrast  | ✔ |    |
 | Equalize      | ✔ |    |
 | Solarize      | ✔ |    |
+| SolarizeAdd   | ✔ | ✔ |
 | Posterize     |    | ✔ |
 | Contrast      | ✔ | ✔ |
 | Color         | ✔ | ✔ |

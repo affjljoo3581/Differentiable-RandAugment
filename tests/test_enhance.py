@@ -21,6 +21,7 @@ from differentiable_randaugment.enhance import (
     Posterize,
     Sharpness,
     Solarize,
+    SolarizeAdd,
 )
 
 from .utils import assert_enhance_op
@@ -56,3 +57,7 @@ def test_Sharpness_consistency():
 
 def test_Solarize_consistency():
     assert_enhance_op(Solarize(0, 0xFF))
+
+
+def test_SolarizeAdd_consistency():
+    assert_enhance_op(SolarizeAdd(0, 0x6E))
